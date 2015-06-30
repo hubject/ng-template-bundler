@@ -18,7 +18,7 @@ var stringify = function(html) {
   return html
     .replace(/\\/g, '\\\\')
     .replace(/'/g, '\\\'')
-    .replace(/\r?\n/g, '\\n\' +\n    \'');
+    .replace(/\n/g, '');
 };
 
 module.exports = function (url, content, options) {
