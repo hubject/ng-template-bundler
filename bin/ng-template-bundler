@@ -1,0 +1,76 @@
+#!/usr/bin/env node
+
+var fs       = require('fs');
+var optimist = require('optimist');
+var html2js = require('../src/html2js');
+var bundler = require('../src/bundler');
+
+var argv = optimist.usage('Usage: $0 <input file> [<input file> ...] [options]')
+  // -o, --outfile option
+  .alias('o', 'outfile')
+  .string('o')
+  .describe('o', 'Writes the result into the outfile instead of stdout')
+  // -m, --module option
+  .alias('m', 'module')
+  .string('m')
+  .describe('m', 'If module name is provided, templates will be packaged under this module.')
+  // -b, --basedir option
+  .alias('b', 'basedir')
+  .string('b')
+  .describe('b', 'If basedir is provided, basedir will be removed from the templates\' path.')
+  // --browserify option
+  .string('browserify')
+  .describe('browserify', 'Compiled templates will use module.exports')
+  // --bundle option
+  .string('bundle')
+  .describe('bundle', 'Use a single run block to load all templates. Passing multiple input files will auto set this option.')
+  // -h, --help option
+  .alias('h', 'help')
+  .boolean('h')
+  .describe('h', 'Shows usage message; what you are looking at.')
+  .argv;
+
+if (argv._.length === 0 || argv.help) {
+  console.log(optimist.help());
+  process.exit();
+}
+
+var resolveFilename = function(filename, basedir) {
+  filename = basedir ? filename.replace(basedir, '') : filename;
+  return filename.replace(/\\/g, '/');
+};
+
+// IO options
+var outfile = argv.o;
+var basedir = argv.b;
+var bundle = argv.bundle;
+var files = argv._;
+
+if(files.length > 1) {
+  bundle = true;
+}
+
+// Transform options
+var options = {
+  module: argv.m,
+  browserify: argv.browserify,
+  bundle: bundle
+};
+
+var output = '', templateContent, templateURL;
+
+for(var i in files) {
+  templateURL = resolveFilename(files[i], basedir);
+  templateContent = fs.readFileSync(files[i], 'utf8');
+  output += html2js(templateURL, templateContent, options);
+}
+
+if(bundle) {
+  output = bundler(output, options);
+}
+
+if(outfile) {
+  fs.writeFileSync(outfile, output, 'utf8');
+} else {
+  console.log(output);
+}

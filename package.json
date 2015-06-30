@@ -1,0 +1,29 @@
+{
+  "author": {
+    "name": "András Tarsoly",
+    "email": "tarsolya@gmail.com"
+  },
+  "name": "ng-template-bundler",
+  "description": "Standalone script to turn Angular template into js and put it in a module. Based on Brian Park's (yaru22@gmail.com) original ng-html2js project.",
+  "version": "0.1.0",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:tarsolya/ng-html2js.git"
+  },
+  "keywords": [
+    "angular",
+    "template",
+    "html2js",
+    "bundler",
+    "templateCache",
+    "cli"
+  ],
+  "main": "./bin/ng-template-bundler",
+  "dependencies": {
+    "optimist": "*"
+  },
+  "bin": {
+    "ng-template-bundler": "./bin/ng-template-bundler"
+  }
+}
