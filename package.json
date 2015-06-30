@@ -21,6 +21,7 @@
   ],
   "main": "./bin/ngtb",
   "dependencies": {
+    "htmlclean": "^2.6.4",
     "optimist": "*"
   },
   "bin": {

@@ -10,11 +10,12 @@
 var fs = require('fs');
 var path = require('path');
 var util = require('util');
+var clean = require('htmlclean');
 
 var tSingle = fs.readFileSync(path.join(__dirname, './single.tmpl'), 'utf-8');
 var tBundleItem = fs.readFileSync(path.join(__dirname, './bundle-item.tmpl'), 'utf-8');
 
-var stringify = function(html) {
+var escapeTemplate = function(html) {
   return html
     .replace(/\\/g, '\\\\')
     .replace(/'/g, '\\\'')
@@ -26,9 +27,9 @@ module.exports = function (url, content, options) {
   var args = [];
 
   if(options.bundle) {
-    args.push(tBundleItem, url, stringify(content));
+    args.push(tBundleItem, url, clean(escapeTemplate(content)));
   } else {
-    args.push(tSingle, moduleName, moduleName, url, stringify(content));
+    args.push(tSingle, moduleName, moduleName, url, clean(escapeTemplate(content)));
   }
 
   return util.format.apply(this, args);
