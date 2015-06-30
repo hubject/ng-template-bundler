@@ -19,11 +19,11 @@
     "templateCache",
     "cli"
   ],
-  "main": "./bin/ng-template-bundler",
+  "main": "./bin/ngtb",
   "dependencies": {
     "optimist": "*"
   },
   "bin": {
-    "ng-template-bundler": "./bin/ng-template-bundler"
+    "ngtb": "./bin/ngtb"
   }
 }
