@@ -19,10 +19,10 @@ var argv = optimist.usage('Usage: $0 <input file> [<input file> ...] [options]')
   .string('b')
   .describe('b', 'If basedir is provided, basedir will be removed from the templates\' path.')
   // --browserify option
-  .string('browserify')
+  .boolean('browserify')
   .describe('browserify', 'Compiled templates will use module.exports')
   // --bundle option
-  .string('bundle')
+  .boolean('bundle')
   .describe('bundle', 'Use a single run block to load all templates. Passing multiple input files will auto set this option.')
   // -h, --help option
   .alias('h', 'help')
