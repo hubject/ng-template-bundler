@@ -5,7 +5,7 @@
   },
   "name": "ng-template-bundler",
   "description": "Standalone node script to bundle Angular templates into javascript modules. Based on Brian Park's (yaru22@gmail.com) original ng-html2js project.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "license": "MIT",
   "repository": {
     "type": "git",
