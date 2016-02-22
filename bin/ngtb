@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 
-var fs       = require('fs');
+var fs = require('fs');
 var optimist = require('optimist');
 var html2js = require('../src/html2js');
 var bundler = require('../src/bundler');
+var glob = require("glob")
 
 var argv = optimist.usage('Usage: $0 <input file> [<input file> ...] [options]')
   // -o, --outfile option
@@ -21,13 +22,14 @@ var argv = optimist.usage('Usage: $0 <input file> [<input file> ...] [options]')
   // --browserify option
   .boolean('browserify')
   .describe('browserify', 'Compiled templates will use module.exports')
-  // --bundle option
-  .boolean('bundle')
-  .describe('bundle', 'Use a single run block to load all templates. Passing multiple input files will auto set this option.')
   // -h, --help option
   .alias('h', 'help')
   .boolean('h')
   .describe('h', 'Shows usage message; what you are looking at.')
+  // -t, --test option
+  .alias('d', 'dependencies')
+  .string('d')
+  .describe('d', 'Path to dependent files, which will be imported via es6 "import".')
   .argv;
 
 if (argv._.length === 0 || argv.help) {
@@ -35,7 +37,7 @@ if (argv._.length === 0 || argv.help) {
   process.exit();
 }
 
-var resolveFilename = function(filename, basedir) {
+var resolveFilename = function (filename, basedir) {
   filename = basedir ? filename.replace(basedir, '') : filename;
   return filename.replace(/\\/g, '/');
 };
@@ -44,9 +46,9 @@ var resolveFilename = function(filename, basedir) {
 var outfile = argv.o;
 var basedir = argv.b;
 var bundle = argv.bundle;
-var files = argv._;
+var globs = argv._;
 
-if(files.length > 1) {
+if (globs.length > 1) {
   bundle = true;
 }
 
@@ -54,23 +56,42 @@ if(files.length > 1) {
 var options = {
   module: argv.m,
   browserify: argv.browserify,
-  bundle: bundle
+  bundle: true
 };
 
 var output = '', templateContent, templateURL;
+var fileNames = [];
 
-for(var i in files) {
-  templateURL = resolveFilename(files[i], basedir);
-  templateContent = fs.readFileSync(files[i], 'utf8');
+for (var i in globs) {
+
+  fileNames = fileNames.concat(glob.sync(globs[i], {
+    cwd: basedir
+  }));
+}
+
+fileNames.forEach(function (fileName) {
+
+  templateURL = fileName;
+  templateContent = fs.readFileSync(basedir + '/' + fileName, 'utf8');
   output += html2js(templateURL, templateContent, options);
+});
+
+output = bundler(output, options);
+
+if(argv.d) {
+
+  var dependencies = [].concat(argv.d);
+  var dependencyStr = '';
+  dependencies.forEach(function(path) {
+
+    dependencyStr += 'import "' + path + '"; ';
+  });
+
+  output = dependencyStr + output;
 }
 
-if(bundle) {
-  output = bundler(output, options);
-}
-
-if(outfile) {
-  fs.writeFileSync(outfile, output, 'utf8');
+if (outfile) {
+  fs.writeFileSync(basedir + '/' + outfile, output, 'utf8');
 } else {
   console.log(output);
 }
