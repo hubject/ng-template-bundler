@@ -2,12 +2,12 @@ ng-template-bundler
 ==========
 
 CLI utility to turn Angular templates into a javascript module, optionally with
-browserify support and bundling.
+browserify support.
 
 Usage
 -----
 ```
-$ ng-template-bundler inputFile [inputFile] [-m module] [-o outfile] [-b basedir] [--browserify]
+$ ngtb inputFile [inputFile] [-m module] [-o outfile] [-b basedir] [--browserify]
 ```
 With a single input file, the module name will be the template's name if no -m option is given.
 With multiple input files, the default module name will be `templates`.
@@ -17,9 +17,9 @@ Without an outfile, result will be written to stdout.
 Without a module name:
 
 ```
-$ ng-template-bundler test/**/*.html
+$ ngtb test/**/*.html
 angular
-  .module('test/test.tmpl', [])
+  .module('test/test.tmpl')
   .run(['$templateCache', function($templateCache) {
     $templateCache.put('test/test.tmpl', '...');
   }]);
@@ -28,9 +28,9 @@ angular
 With a module name:
 
 ```
-$ ng-template-bundler test/**/*.html -m foo
+$ ngtb test/**/*.html -m foo
 angular
-  .module('foo', [])
+  .module('foo')
   .run(['$templateCache', function ($templateCache) {
     $templateCache.put('test/test.tmpl', '...');
   }]);
@@ -39,9 +39,9 @@ angular
 With a multiple input files:
 
 ```
-$ ng-template-bundler test/**/*.html test2/**/*.html
+$ ngtb test/**/*.html test2/**/*.html
 angular
-  .module('templates', [])
+  .module('templates')
   .run(['$templateCache', function ($templateCache) {
     $templateCache.put('test/test.tmpl', '...');
     $templateCache.put('test/another.tmpl', ' ...');
@@ -51,9 +51,9 @@ angular
 With a multiple input files and browserify:
 
 ```
-$ ng-template-bundler test/**/*.html test2/**/*.html
+$ ngtb test/**/*.html test2/**/*.html
 module.exports = angular
-  .module('templates', [])
+  .module('templates')
   .run(['$templateCache', function ($templateCache) {
     $templateCache.put('test/test.tmpl', '...');
     $templateCache.put('test/another.tmpl', ' ...');
@@ -63,9 +63,9 @@ module.exports = angular
 With a single input files and browserify:
 
 ```
-$ ng-template-bundler test/**/*.html test2/**/*.html
+$ ngtb test/**/*.html test2/**/*.html
 module.exports = angular
-  .module('templates', [])
+  .module('templates')
   .run(['$templateCache', function ($templateCache) {
     $templateCache.put('test/test.tmpl', '...');
     $templateCache.put('test/another.tmpl', ' ...');
@@ -73,9 +73,9 @@ module.exports = angular
 ```
 
 ```
-$ ng-template-bundler test/**/*.html --browserify
+$ ngtb test/**/*.html --browserify
 module.exports = angular
-  .module('test/test.tmpl', [])
+  .module('test/test.tmpl')
   .run(['$templateCache', function($templateCache) {
     $templateCache.put('test/test.tmpl', '...');
   }]);
